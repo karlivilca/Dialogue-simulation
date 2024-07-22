@@ -1,0 +1,161 @@
+<html><head><base href="https://websim.io/" />
+<title>Friend Hobby Dialogue Simulation</title>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f8ff;
+}
+.chat-container {
+    width: 90%;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.chat-header {
+    background-color: #4a69bd;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+.chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+}
+.message {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 80%;
+    position: relative;
+    clear: both;
+}
+.friend1 {
+    background-color: #78e08f;
+    float: left;
+}
+.friend2 {
+    background-color: #7ed6df;
+    float: right;
+}
+.message::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+}
+.friend1::after {
+    left: -15px;
+    border-right-color: #78e08f;
+    border-left: 0;
+    border-bottom: 0;
+}
+.friend2::after {
+    right: -15px;
+    border-left-color: #7ed6df;
+    border-right: 0;
+    border-bottom: 0;
+}
+.input-area {
+    display: flex;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+#userInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 2px solid #4a69bd;
+    border-radius: 25px;
+    font-size: 16px;
+}
+#sendMessage {
+    background-color: #4a69bd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+#sendMessage:hover {
+    background-color: #3c5aa6;
+}
+</style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">Friend Hobby Chat</div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message friend1">Hey there! What have you been up to lately?</div>
+    </div>
+    <form class="input-area" method="GET" action="https://websim.io/interact">
+        <input type="text" id="userInput" name="userInput" placeholder="Type your message...">
+        <button type="submit" id="sendMessage">Send</button>
+    </form>
+</div>
+
+<script>
+const friends = ['friend1', 'friend2'];
+let currentFriend = 0;
+
+const hobbyResponses = {
+    'reading': "That's awesome! I love reading too. What genre are you into right now?",
+    'gaming': "Cool! I'm a gamer myself. What games have you been playing lately?",
+    'cooking': "Nice! I've been trying to improve my cooking skills too. Got any favorite recipes?",
+    'sports': "Sports are great! Which ones do you play or watch?",
+    'music': "Music is life! Are you into playing instruments or just listening?",
+    'art': "Artistic pursuits are so fulfilling! What kind of art do you create?",
+    'traveling': "Traveling is amazing! Any exciting destinations you're planning to visit?",
+    'gardening': "Gardening is so relaxing! What are you growing in your garden?",
+    'photography': "Photography is a great hobby! What's your favorite subject to shoot?",
+    'writing': "Writing is a wonderful way to express yourself! What kind of things do you write?",
+    'default': "That sounds interesting! Tell me more about it. How did you get into that hobby?"
+};
+
+document.getElementById('sendMessage').addEventListener('click', function(e) {
+    e.preventDefault();
+    let input = document.getElementById('userInput');
+    let message = input.value;
+    if (message) {
+        addMessage(friends[currentFriend], message);
+        input.value = '';
+        currentFriend = (currentFriend + 1) % 2;
+        setTimeout(() => respondToFriend(message), 1000);
+    }
+});
+
+function addMessage(sender, text) {
+    let chatMessages = document.getElementById('chatMessages');
+    let messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function respondToFriend(message) {
+    let response = hobbyResponses.default;
+    for (let hobby in hobbyResponses) {
+        if (message.toLowerCase().includes(hobby)) {
+            response = hobbyResponses[hobby];
+            break;
+        }
+    }
+    addMessage(friends[currentFriend], response);
+    currentFriend = (currentFriend + 1) % 2;
+}
+</script>
+</body></html>
